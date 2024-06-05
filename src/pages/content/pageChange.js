@@ -9,6 +9,7 @@ import CommonFloat from "./component/CommonFloat.vue";
 import RandomPin from "./component/RandomPin.vue";
 import LikePins from './component/LikePins.vue';
 import TaskList from './component/TaskList.vue';
+import FollowEachOther from './component/FollowEachOther.vue';
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
@@ -52,6 +53,9 @@ const initUrlInfo = async () => {
             }
             if (urlArr[5] === "praise" && isSelf) {
                 url.methods.push("CANCEL_ALL_PINS_ZAN");
+            }
+            if (urlArr[5] === 'following' && isSelf) {
+                url.methods.push('FOLLOW_EACH_OTHER');
             }
         }
         // 通用设置
@@ -246,6 +250,20 @@ const METHOD_MAP = {
             }
         },
         remove() {
+        }
+    },
+    // 删除我的全部沸点
+    FOLLOW_EACH_OTHER: {
+        target: () => document.querySelector(".list-header"),
+        insert() {
+            $(`<div id="FOLLOW_EACH_OTHER"><div>`).insertBefore(this.target());
+            this.app = createApp(FollowEachOther);
+            insertPlugin(this.app)
+            this.app.mount("#FOLLOW_EACH_OTHER");
+        },
+        remove() {
+            this.app?.unmount();
+            $(`#FOLLOW_EACH_OTHER`).remove();
         }
     }
 };

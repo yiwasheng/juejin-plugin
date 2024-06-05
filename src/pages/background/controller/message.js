@@ -11,6 +11,7 @@ import {
     getRandomText,
     copyPinPush
 } from "./pin";
+import {getAllFollowees, getAllFollowers, unFollow} from "../api/user";
 
 // 事件处理map
 const eventHandleMap = {
@@ -25,6 +26,9 @@ const eventHandleMap = {
     'get-random-text': (data) => getRandomText(data), // 获取随机文本
     'copy-pin-push': (data) => copyPinPush(data), // 复制并发布沸点
     'get-self-task-info': () => getSelfTaskInfo(), // 获取个人任务信息
+    'get-all-followees': (data) => getAllFollowees(data), // 获取我关注的用户
+    'get-all-followers': (data) => getAllFollowers(data), // 获取关注我的用户
+    'un-follow': (data) => unFollow(data), // 取消关注用户
 }
 
 const handleOnMessage = async (event, data, callback) => {

@@ -12,5 +12,8 @@ export const EVENT_MAP = {
     GET_YEAR_DYNAMIC: 'get-year-dynamic',
     GET_RANDOM_TEXT: 'get-random-text',
     COPY_PIN_PUSH: 'copy-pin-push',
-    GET_SELF_TASK_INFO: 'get-self-task-info'
+    GET_SELF_TASK_INFO: 'get-self-task-info',
+    GET_ALL_FOLLOWEES: 'get-all-followees',
+    GET_ALL_FOLLOWERS: 'get-all-followers',
+    UN_FOLLOW: 'un-follow',
 }
