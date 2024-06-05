@@ -1,5 +1,6 @@
 // 用户相关
 import {ajax} from "./index";
+import {sleep} from "../../../tool";
 
 /*
 * 用户登出
@@ -105,5 +106,64 @@ export const getProgress = (userId, growthType = 1) => ajax({
     url: `https://api.juejin.cn/growth_api/v1/user_growth/progress?uuid=${userId}`,
     method: 'POST',
     data: {growth_type: growthType},
+    isInclude: true,
+})
+
+/*
+* 获取我关注的用户
+* @param userId 用户id
+* @param growthType 类型
+* */
+export const getAllFollowees = async(userId) => {
+    let currentCursor = 0;
+    let loaded = false
+    const result = []
+    do {
+        const a = await ajax({
+            url: `https://api.juejin.cn/user_api/v1/follow/followees?user_id=${userId}&limit=20&cursor=${currentCursor}`,
+            method: 'GET',
+            isInclude: true,
+        })
+        const { data: { count, cursor, data }} = a
+        currentCursor = +cursor
+        if (currentCursor >= +count) loaded = true
+        else await sleep(0.5)
+        result.push(...data)
+    } while (!loaded)
+    return result
+}
+
+/*
+* 获取关注我的用户
+* @param userId 用户id
+* @param growthType 类型
+* */
+export const getAllFollowers = async(userId) => {
+    let currentCursor = 0;
+    let loaded = false
+    const result = []
+    do {
+        const a = await ajax({
+            url: `https://api.juejin.cn/user_api/v1/follow/followers?user_id=${userId}&limit=20&cursor=${currentCursor}`,
+            method: 'GET',
+            isInclude: true,
+        })
+        const { data: { count, cursor, data }} = a
+        currentCursor = +cursor
+        if (currentCursor >= +count) loaded = true
+        else await sleep(0.5)
+        result.push(...data)
+    } while (!loaded)
+    return result
+}
+
+/*
+* 取消关注用户
+* @param user 用户对象，包含user_id
+* */
+export const unFollow = (user) => ajax({
+    url: `https://api.juejin.cn/interact_api/v1/follow/undo`,
+    method: 'POST',
+    data: {id: user.user_id, type: 1},
     isInclude: true,
 })
