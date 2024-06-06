@@ -1,4 +1,5 @@
 import { resetSelf, loopNotReadMessageCount } from "./controller/user";
+import { loopPinIsCheck } from "./controller/pin";
 import { contextMenusOnClick, resetContextMenus } from "./controller/contextMenus";
 import { tabOnUpdate } from "./controller/tabs";
 import { runtimeOnMessage } from "./controller/message";
@@ -14,4 +15,6 @@ chrome.runtime.onInstalled.addListener(async () => {
 	await resetContextMenus();
 	// 开始循环获取未读消息数量
 	loopNotReadMessageCount();
+	// 开始循环获取沸点是否开始审核
+    loopPinIsCheck();
 })

@@ -1,8 +1,8 @@
 // 沸点相关
 import {getShortMsgDetail, getShortMsgList, publishShortMsg, removeShortMsg} from "../api/content";
 import {queryTopicDetail} from "../api/tag";
-import {getTopicShortMsgList} from "../api/recommend";
-import {getStorage, setStorage} from "../chrome";
+import {getRecommendList, getTopicShortMsgList} from "../api/recommend";
+import {getStorage, sendBasicNotifications, setStorage} from "../chrome";
 import {dayjs, getRandInt, sleep} from "../../../tool";
 import {cancelDigg, diggQueryPage} from "../api/interact";
 
@@ -233,4 +233,23 @@ export const copyPinPush = async (pinId) => {
     let publishRes = await publishShortMsg(pushInfo);
     if (!publishRes.success) return null;
     return publishRes.data;
+}
+
+/*
+* 循环判断最新推荐沸点
+* */
+let loopPinIsCheckInterval = null;
+let prePinMTime = null;
+export const loopPinIsCheck = async () => {
+    if (loopPinIsCheckInterval) return;
+    loopPinIsCheckInterval = setInterval(async () => {
+        let {success, data} = await getRecommendList({});
+        if (!success) return null;
+        let {msg_Info: {mtime}} = data[0];
+        let currentMTime = dayjs(mtime * 1000).format('YYYY-MM-DD HH:mm:ss');
+        if (currentMTime === prePinMTime) return;
+        let diffMinute = prePinMTime ? dayjs(currentMTime).diff(currentMTime, 'minute') : '无';
+        sendBasicNotifications(`推荐沸点更新`, `最新审核：${currentMTime}\n上条审核：${prePinMTime}\n间隔分钟：${diffMinute}`);
+        prePinMTime = currentMTime;
+    }, 10 * 1000)
 }
